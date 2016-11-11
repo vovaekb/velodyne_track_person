@@ -8,6 +8,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/octree/octree.h>
+#include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/common/centroid.h>
@@ -18,6 +19,7 @@
 #include <vector>
 
 typedef pcl::PointXYZ PointInT;
+typedef pcl::PointCloud<PointInT>::Ptr PointInTPtr;
 
 ros::Publisher result_pub;
 ros::Publisher pose_pub;
@@ -25,6 +27,7 @@ ros::Publisher person_pub;
 
 pcl::octree::OctreePointCloudChangeDetector<PointInT> *octree;
 
+float grid_size = 0.01;
 // Octree resolution - side length of octree voxels
 float resolution = 0.4;
 int noise_filter = 50;
@@ -56,6 +59,16 @@ void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& input)
     pcl::PointCloud<PointInT>::Ptr cloud (new pcl::PointCloud<PointInT>);
 
     pcl::fromROSMsg(*input, *cloud);
+
+    // Perform downsamplign via VoxelGrid
+    pcl::VoxelGrid<PointInT> voxel_grid;
+    voxel_grid.setInputCloud(cloud);
+    voxel_grid.setLeafSize(grid_size, grid_size, grid_size);
+
+    PointInTPtr temp_cloud (new pcl::PointCloud<PointInT> ());
+    voxel_grid.filter(*temp_cloud);
+
+    cloud = temp_cloud;
 
     // Filtering out noise
     pcl::StatisticalOutlierRemoval<PointInT> sor;
