@@ -177,12 +177,12 @@ int main(int argc, char** argv)
 
     parseCommandLine();
 
-    std::cout << "resolution: " << resolution << "\n";
-    std::cout << "noise_filter: " << noise_filter << "\n";
-    std::cout << "mean_k: " << sor_mean_k << "\n";
-    std::cout << "std_dev_mult: " << sor_stddev_mul_th << "\n";
-    std::cout << "radius: " << ror_rad << "\n";
-    std::cout << "min_neighbors: " << ror_min_heighbors << "\n";
+    ROS_INFO_STREAM("resolution: " << resolution);
+    ROS_INFO_STREAM("noise_filter: " << noise_filter);
+    ROS_INFO_STREAM("mean_k: " << sor_mean_k);
+    ROS_INFO_STREAM("std_dev_mult: " << sor_stddev_mul_th);
+    ROS_INFO_STREAM("radius: " << ror_rad);
+    ROS_INFO_STREAM("min_neighbors: " << ror_min_heighbors);
 
     ros::Subscriber sub = nh.subscribe("input", 1, cloud_cb);
 
